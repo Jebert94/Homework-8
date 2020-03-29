@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Random;
 
 
@@ -8,17 +7,18 @@ public class PublisherImplementation implements IPublisher {
 	
 	private ArrayList<IObserver> subscribers = new ArrayList<IObserver>();
 	private ArrayList<IObserver> unSubscribed = new ArrayList<IObserver>();
-	private ArrayList<IObserver> notifyList = new ArrayList<IObserver>();
-	private final ArrayList<Integer> check = new ArrayList<>(Arrays.asList(40,60,80,200));
+	private ArrayList<IObserver> reAdd = new ArrayList<IObserver>();
+ 	private ArrayList<IObserver> notifyList = new ArrayList<IObserver>();
+	private final ArrayList<Integer> check = new ArrayList<>(Arrays.asList(40,60,80,120,200));
 
 	
 	public void registerObserver(IObserver o) {
-		if(unSubscribed.contains(o)) {
-			unSubscribed.remove(o);
-		}		
+		
 		subscribers.add(o);
 		System.out.println("Subscriber " + o + " was ADDED." );
-
+		if(unSubscribed.contains(o)) {
+			unSubscribed.remove(o);
+		}
 	}
 	
 	public void removeObserver(IObserver o) {
@@ -28,10 +28,6 @@ public class PublisherImplementation implements IPublisher {
 	}
 	
 	public void notifyObservers(Event e) {
-//		Iterator<IObserver> iterator = subscribers.iterator();
-//		while(iterator.hasNext()) {
-//			iterator.next().updateObserver(e);
-//		}
 				
 		for (int i = 0; i < subscribers.size(); i++) {
 			notifyList.add(subscribers.get(i));
@@ -52,23 +48,30 @@ public class PublisherImplementation implements IPublisher {
 		 return e;
 	 }
 	
-	 public void runSimulation() {
-		for (int iteration = 0; iteration < 200; iteration++) {
+	 public void runSimulation() 
+	 {
+		for (int iteration = 1; iteration <= 200; iteration++) 
+		{
 			Event e = generateEvent(iteration);
-			if(check.contains(iteration)) {				
-				Iterator<IObserver> iterator = unSubscribed.iterator();
-				while(iterator.hasNext()) {
-					IObserver o = iterator.next();
-					registerObserver(o);
+			if(check.contains(iteration))
+			{	
+				System.out.println("checking for iteration " + iteration);
+				for(IObserver o : unSubscribed){
+					reAdd.add(o);
 				}
-			}
-			notifyObservers(e);
-
-//				for(IObserver o : unSubscribed) {
-//					registerObserver(o);
+					
+				for(IObserver i : reAdd) {
+					registerObserver(i);
+				}
 				
-			
+				reAdd.clear();
+			}
+		notifyObservers(e);
+
 		}
+
+
+
 		
 		
 		

@@ -22,6 +22,7 @@ public class SubscriberOdds implements IObserver {
 
 	@Override
 	public void unregisterMe(PublisherImplementation pub) {
+		
 		pub.removeObserver(this);
 
 	}
